@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",          // which JavaScript version we compile to
+    "module": "commonjs",        // module system that Node understands by default
+    "rootDir": "src",            // where our TypeScript code lives
+    "outDir": "dist",            // where the compiled JavaScript goes
+    "strict": true,              // turn on all type checks (catches more bugs)
+    "esModuleInterop": true,     // lets us write `import express from "express"`
+    "skipLibCheck": true         // don't type-check the libraries, only our code
+  },
+  "include": ["src"]
+}
