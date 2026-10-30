@@ -7,3 +7,25 @@ Content-Type: application/json
   "email": "juan@example.com",
   "password": "secret123"
 }
+
+### Register a new user invalid data
+
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Juan",
+  "email": "juanexample.com",
+  "password": "a"
+}
+
+### Register a new user try role ADMIN
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Juan",
+  "email": "juan@example.com",
+  "password": "secret123",
+  "role": "ADMIN"
+}
