@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { registerSchema } from "../schemas/auth.schema";
+import { registerSchema, loginSchema } from "../schemas/auth.schema";
 import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma";
+import { signToken } from "../lib/jwt";
 
 // Handles new user sign ups
 export const register = async (req: Request, res: Response) => {
@@ -16,16 +17,15 @@ export const register = async (req: Request, res: Response) => {
 
   const { name, email, password } = result.data;
 
-  // Emails must be uniue, so check if this one is alredy taken
+  // Emails must be unique, so check if this one is already taken
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
     res.status(409).json({ error: "Email already registered" });
     return;
-  };
+  }
 
   // Never store plain passwords, only their hash
-
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
@@ -34,4 +34,32 @@ export const register = async (req: Request, res: Response) => {
   });
 
   res.status(201).json({ user });
+};
+
+// Checks the credentials and gives back a token
+export const login = async (req: Request, res: Response) => {
+  const result = loginSchema.safeParse(req.body);
+
+  if (!result.success) {
+    res.status(400).json({ errors: z.flattenError(result.error).fieldErrors });
+    return;
+  }
+
+  const { email, password } = result.data;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    res.status(401).json({ error: "Invalid email or password" });
+    return;
+  }
+
+  const passwordMatches = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatches) {
+    res.status(401).json({ error: "Invalid email or password" });
+    return;
+  }
+
+  res.status(200).json({ token: signToken(user.id) });
 };

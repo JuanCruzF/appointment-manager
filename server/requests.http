@@ -29,3 +29,30 @@ Content-Type: application/json
   "password": "secret123",
   "role": "ADMIN"
 }
+
+### Login with register user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@admin.com",
+  "password": "secret123"
+}
+
+### Login with register user but incorrect password
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@admin.com",
+  "password": "123"
+}
+
+### Login with wrong user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@error.com",
+  "password": "secret123"
+}
