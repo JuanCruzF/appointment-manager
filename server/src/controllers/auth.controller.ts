@@ -63,3 +63,18 @@ export const login = async (req: Request, res: Response) => {
 
   res.status(200).json({ token: signToken(user.id) });
 };
+
+// Returns the logged in user's data
+export const getMe = async (req: Request, res: Response) => {
+  const user = await prisma.user.findUnique({
+    where: { id: res.locals.userId },
+    select: { id: true, name: true, email: true, role: true, createdAt: true },
+  });
+
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+
+  res.status(200).json({ user });
+};

@@ -11,3 +11,8 @@ if (!JWT_SECRET) {
 export const signToken = (userId: number) => {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: "1d" });
 };
+
+// Throws an error if the token is fake or expired
+export const verifyToken = (token: string) => {
+  return jwt.verify(token, JWT_SECRET) as { userId: number };
+};
