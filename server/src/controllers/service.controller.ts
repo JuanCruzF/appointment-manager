@@ -27,3 +27,13 @@ export const createService = async (req: Request, res: Response) => {
     // 4. Respond 201 with { service }
     res.status(201).json({ service });
 };
+
+// Lists the services clients can book
+export const listServices = async (req: Request, res: Response) => {
+    const services = await prisma.service.findMany({
+         where: { active: true }, 
+         orderBy: { name: "asc" } 
+    });
+    
+    res.status(200).json({ services });
+};

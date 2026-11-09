@@ -67,3 +67,6 @@ Authorization: Bearer {{adminLogin.response.body.token}}
   "name": "Hair cut",
   "durationMinutes": "30"
 }
+
+### 6- List active services (expect 200)
+GET http://localhost:3000/services
