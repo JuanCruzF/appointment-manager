@@ -1,0 +1,69 @@
+### Login as admin
+# @name adminLogin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@admin.com",
+  "password": "secret123"
+}
+
+### Login as client
+# @name clientLogin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@example.com",
+  "password": "secret123"
+}
+
+
+### 1- Admin creates a service (expect 201)
+POST http://localhost:3000/services
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+{
+  "name": "Beard trim",
+  "durationMinutes": 20
+}
+
+### 2- Admin repeats the same service (expect 409)
+POST http://localhost:3000/services
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+{
+  "name": "Beard trim",
+  "durationMinutes": 20
+}
+
+### 3- Client tries create (expect 403)
+POST http://localhost:3000/services
+Content-Type: application/json
+Authorization: Bearer {{clientLogin.response.body.token}}
+
+{
+  "name": "Beard trim",
+  "durationMinutes": 20
+}
+
+### 4- No token (expect 401)
+POST http://localhost:3000/services
+Content-Type: application/json
+
+{
+  "name": "Beard trim",
+  "durationMinutes": 20
+}
+
+### 5- Duration with text (expect 400)
+POST http://localhost:3000/services
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+{
+  "name": "Hair cut",
+  "durationMinutes": "30"
+}
